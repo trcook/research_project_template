@@ -1,0 +1,35 @@
+%!TEX root = ./skeleton.tex
+
+
+%% The following are, more or less, required preliminaries to get knitr up and running the way I like it.
+```{r results='hide',message=FALSE,warning=FALSE,echo=FALSE}
+
+ opts_chunk$set(fig.path = 'figure/listings-')
+ options(replace.assign = TRUE)
+ setwd("../data") #set working directory here.
+ source(".Rprofile")
+ #render_latex() # tells knitr to render using latex -- must come before listings statement below
+ #render_listings() # Tells Knitr to render using listings
+ # You can put in requisite packages starting here
+ library('knitr') # you must include this
+ 
+ library(ggplot2) 
+ inline_hook <- function(x) { #this part sets up rounding for inline expressions.
+     if(is.numeric(x)) x <- round(x, 3)
+     paste(as.character(x), collapse=", ")
+ }
+ knit_hooks$set(inline = inline_hook)
+
+# Needed to setup ggplot rendering for white background etc.:
+theme_set(theme_bw())
+theme_update(panel.grid.major =element_blank(),
+             panel.grid.major = element_blank(),
+             panel.border =element_blank(),
+             axis.line = element_line(colour="black",linetype=1,size=.25),
+             panel.background = element_rect(fill="White",colour=NA)
+)
+
+```
+
+
+\section{Empirics}
