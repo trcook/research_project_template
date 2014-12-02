@@ -32,4 +32,24 @@ theme_update(panel.grid.major =element_blank(),
 ```
 
 
-\section{Empirics}
+\section{Analysis}
+\label{sec:analysis}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%DO NOT WRITE BELOW THIS LINE
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "../skeleton"
+%%% End: 
