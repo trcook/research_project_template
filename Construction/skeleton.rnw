@@ -1,0 +1,72 @@
+\documentclass[]{article}
+\usepackage{myarticle}
+\renewcommand{\mytitle}{title here}
+\renewcommand{\mysubtitle}{subtitle here}
+
+
+
+
+%  =================================================
+%  = things needed for math and knitr and listings =
+%  =================================================
+
+
+
+\usepackage{listings}
+\lstset{language=R}
+
+\usepackage{xcolor}
+
+
+
+\lstset{breaklines=true} % break long lines
+
+\definecolor{mygrey}{gray}{0.55}
+\definecolor{myb}{HTML}{55B0F7}
+\setcounter{secnumdepth}{3} 
+% \renewcommand\thesection{\arabic{section}}
+% \renewcommand\thesubsection{\arabic{section}.\alph{subsection}}
+
+\begin{document}
+
+
+
+
+%  ===================================================
+%  = Initial setup chunk (needs to be in here as is) =
+%  ===================================================
+
+
+<<setup, include=FALSE, cache=FALSE>>=
+opts_chunk$set(fig.path = 'figure/listings-')
+options(replace.assign = TRUE)
+setwd("~/Documents/Boulder/2013 Semester 1/MLE/Homework/Homework 4") #set working directory here. Also, this file must be in the working directory
+read_chunk("homework4.R") # Replace with name of script to read
+render_listings() # Tells Knitr to render using listings
+# You can put in requisite packages starting here
+library('knitr') # you must include this
+library(ggplot2) 
+inline_hook <- function(x) { #this part sets up rounding for inline expressions.
+    if(is.numeric(x)) x <- round(x, 3)
+    paste(as.character(x), collapse=", ")
+}
+knit_hooks$set(inline = inline_hook)
+@
+
+%  =================
+%  = Some Examples =
+%  =================
+
+% pulls out a chunk, prints the code and the evaluation
+
+%<<EXAMPLE,EVAL=T,echo=TRUE>>=
+%@
+
+% Put some inline value (my_obj) into the text: 
+% \Sexpr{my_obj}
+% evaluate and echo, hide results: 
+%<<simulate,EVAL=T,echo=TRUE,results='hide' >>=
+%@
+
+\include{abstract.tex}
+\end{document}
