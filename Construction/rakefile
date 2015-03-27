@@ -1,50 +1,47 @@
+require "rake"
 require "rake/clean"
-task :default=>[:build,"clobber"]
-task :rmd=>["knit:rmd",:build,"clobber"]
-task :clobber do puts CLEAN end
-task :build do
-	begin
-	system(%{latexmk -pdf -f skeleton})
-	
-	rescue 
-
-	else
 
 
-	end
-		CLEAN.include(FileList[Dir.glob("*").find_all do |t| /(.*\.(snm|out\.ps|nav|vrb|run\.xml|bcf|tmp|blg|toc|log|aux|bbl|fls|fdb_latexmk))/=~t end])
-	CLEAN.include(FileList[Dir.glob("*").find_all do |t| /(.*(blx\.bib|synctex\.gz))/=~t end])
-	#Rake::Task["clean"].execute
-	#Rake::Task["clobber"].execute
+my_rmd_files=FileList[Dir.glob("./*.rnw", File::FNM_CASEFOLD)]
+task :default=>my_rmd_files.ext("tex")
+file my_rmd_files.ext("tex")=>my_rmd_files
+
+SCRIPT_TO_RUN =<<EOS
+Rscript -e 'require(knitr);render_latex();opts_chunk$set(dev = "pdf",fig.ext="pdf",eval=TRUE,echo=FALSE,message=FALSE,warning=FALSE,error=FALSE);knit("@input_file", output="@output_file")'
+EOS
+
+  
+rule ".tex" => ".rnw" do |t|
+  proc_and_move(t)
 end
+
+define_method(:proc_and_move) do |t,*args|
+  system %{#{SCRIPT_TO_RUN.sub("@input_file",t.source).sub("@output_file",t.name.ext("tex"))}}
+  if $? != 0 then 
+    raise :'r_exception: re-check your R code'.to_s 
+  end
+end
+
+task :default do
+  begin
+    system %{latexmk --pdf --quiet -f --bibtex skeleton}
+  rescue
+    puts "proceeding despite errors"
+  end
+
+  begin
+    # system %{latexmk -c skeleton}
+  rescue
+    puts "proceeding despite errors"
+  end
+
+end
+
+
+
+task :default=>my_rmd_files.ext("tex")
+file my_rmd_files.ext("tex")=>my_rmd_files
+
 
 CLEAN.include(FileList[Dir.glob("*").find_all do |t| /(.*\.(snm|out\.ps|nav|vrb|run\.xml|bcf|tmp|blg|toc|log|aux|bbl|fls|fdb_latexmk))/=~t end])
-	CLEAN.include(FileList[Dir.glob("*").find_all do |t| /(.*(blx.bib))/=~t end])
-
-
-
-
-namespace :knit do
-# define the script to run rmd files keep this on one line:
-KNITR_SCRIPT =<<EOS
-Rscript -e 'require(knitr);options("revealout"="n");render_markdown();knit("@input_file", output="@output_file")'
-EOS
-	
-	# select the files to be run through knitr
-	my_rmd_files=FileList[Dir.glob("./*.rmd", File::FNM_CASEFOLD)]
-	my_latex_files=my_rmd_files.ext("tex")
-
-	desc %{knits the requisite rmd files for processing into a pdf}
-	task :rmd=>my_latex_files
-	rule ".tex"=>".rmd" do
-		system %{
-		#{KNITR_SCRIPT.sub("@input_file",t.source).sub("@output_file",t.name)}
-			}
-	end
-
-
-
-
-
-
-end
+CLEAN.include(FileList[Dir.glob("*").find_all do |t| /(.*(blx.bib))/=~t end])

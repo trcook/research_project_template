@@ -2,12 +2,13 @@
 
 
 %% The following are, more or less, required preliminaries to get knitr up and running the way I like it.
-```{r results='hide',message=FALSE,warning=FALSE,echo=FALSE}
-
- opts_chunk$set(fig.path = 'figure/listings-')
+<<results='hide',message=FALSE,warning=FALSE,echo=FALSE>>=
+ render_latex() 
+ # opts_chunk$set(fig.path = 'figure/listings-')
  options(replace.assign = TRUE)
  setwd("../data") #set working directory here.
- source(".Rprofile")
+ opts_chunk$set(out.width ="\\textwidth")
+
  #render_latex() # tells knitr to render using latex -- must come before listings statement below
  #render_listings() # Tells Knitr to render using listings
  # You can put in requisite packages starting here
@@ -29,17 +30,20 @@ theme_update(panel.grid.major =element_blank(),
              panel.background = element_rect(fill="White",colour=NA)
 )
 
-```
+@
 
 
 \section{Analysis}
 \label{sec:analysis}
+l
 
+<<>>=
 
+require(ggplot2)
+qplot(rnorm(100,0,1))
 
-
-
-
+@
+ 
 
 
 
